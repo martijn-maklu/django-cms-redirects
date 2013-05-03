@@ -43,7 +43,9 @@ class RedirectFallbackMiddleware(object):
             # It could be that we need to try without the language slug
             if r is None and settings.USE_I18N and path[3] == '/' and path[1:3] in map(lambda x: x[0], settings.LANGUAGES):
                r = get_redirect(path[3:])
-               # TODO: also check without trailings slash / query string
+               # check without query string
+               if r is None and path.count('?'):
+                   r = get_redirect(remove_query(path[3:]))                                  
 
             if r is not None:
                 if r.page:
